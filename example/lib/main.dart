@@ -56,6 +56,7 @@ class _MyAppState extends State<MyApp> {
 
       );
     }catch (e){
+      print(e);
       Scaffold.of(scaffoldContext).showSnackBar(
         new SnackBar(
           content: new Text(e.toString()),
