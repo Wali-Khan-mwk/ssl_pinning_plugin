@@ -8,6 +8,7 @@ public class SwiftSslPinningPlugin: NSObject, FlutterPlugin {
     let manager = Alamofire.SessionManager.default
     var fingerprints: Array<String>?
     var flutterResult: FlutterResult?
+    var check : UnsafeMutablePointer<SecTrustResultType>?
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "ssl_pinning_plugin", binaryMessenger: registrar.messenger())
@@ -73,7 +74,7 @@ public class SwiftSslPinningPlugin: NSObject, FlutterPlugin {
                 let _serverTrust = challenge.protectionSpace.serverTrust,
                 let _serverCert = SecTrustGetCertificateAtIndex(_serverTrust, 0),
                 challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-                SecTrustEvaluate(_serverTrust, nil) == errSecSuccess
+                SecTrustEvaluate(_serverTrust, self.check!) == errSecSuccess
                 else {
                     self.sendResponse(result: FlutterError(code: "ERROR CERT", message: "Le certificat est invalide", details: nil))
                     return (.cancelAuthenticationChallenge, nil)
